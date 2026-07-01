@@ -1,0 +1,18 @@
+# Sensitive student/faculty data — do not upload real university data
+fcit.csv
+ID_fcit.csv
+ID.fcit.csv
+
+# Generated runtime data
+relocations.json
+notifications.json
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
