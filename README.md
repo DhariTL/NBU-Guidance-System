@@ -33,21 +33,25 @@ University timetables are typically static and manually managed, making it hard 
 ## Project Structure
 
 ```
-├── app.py              # Flask backend, API routes, and SocketIO events
-├── index.html           # Frontend interface
-├── fcit.csv              # Course/schedule data (sample structure only — real data not included)
-├── ID_fcit.csv           # Student enrollment data (sample structure only — real data not included)
+├── app.py                  # Flask backend, API routes, and SocketIO events
+├── index.html               # Frontend interface
+├── fcit_sample.csv           # Sample course/schedule data (fake data, real column structure)
+├── ID_fcit_sample.csv        # Sample student enrollment data (fake data, real column structure)
+├── .gitignore                # Excludes real university data from version control
+├── LICENSE                    # MIT License
 ```
 
 ## Note on Data Privacy
 
-The original dataset used during development was exported from NBU's Argos student system and contains real student and faculty information. That data has been excluded from this repository. To run the project locally, replace `fcit.csv` and `ID_fcit.csv` with your own sample data following the same column structure.
+The original dataset used during development was exported from NBU's Argos student system and contains real student and faculty information. That data has been excluded from this repository via `.gitignore`. Sample files with the same column structure but fictional data (`fcit_sample.csv`, `ID_fcit_sample.csv`) are provided so the project can be run and tested locally — rename them to `fcit.csv` and `ID_fcit.csv` (or update the paths in `app.py`) to use them.
 
-## Author
+## Team
 
-**Dhari Al Talal**
-Information Systems Graduate, Northern Border University
-[LinkedIn](#) · dhari.altalal@gmail.com
+- **Dhari Talal Alshammari** — dhari.altalal@gmail.com
+- **Fahad Habib Alshammari**
+- **Jarrah Faisal Alshammari**
+
+Information Systems Graduates, Northern Border University
 
 ## Academic Context
 
