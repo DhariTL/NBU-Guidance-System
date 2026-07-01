@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+<title>دليل جامعة الحدود الشمالية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+:root{--g:#00a859;--g2:#007a40;--red:#ef4444;--amber:#f59e0b;--gray:#6b7280;--bg:#f0f4f3;--card:#fff;--shadow:0 2px 12px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:'Tajawal',sans-serif;color:#1a1a2e;min-height:100vh}
+.hidden{display:none!important}
+.flex-c{display:flex;justify-content:center;align-items:center}
+#login-view{min-height:100vh;background:linear-gradient(135deg,#e8f5ee 0%,#f0f4f3 60%,#e0f0e8 100%)}
+.login-card{background:#fff;padding:44px 36px;border-radius:24px;box-shadow:0 8px 40px rgba(0,168,89,.12);width:92%;max-width:420px}
+.login-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--g),var(--g2));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px}
+.login-card h1{text-align:center;color:#1a1a2e;font-size:22px;font-weight:800;margin-bottom:6px}
+.login-card p{text-align:center;color:#6b7280;font-size:14px;margin-bottom:28px}
+.field-label{display:block;margin-bottom:6px;font-weight:700;font-size:14px;color:#374151}
+.inp{width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid #e5e7eb;margin-bottom:16px;font-family:'Tajawal',sans-serif;font-size:15px;background:#f9fafb;color:#1a1a2e}
+.inp:focus{outline:none;border-color:var(--g);background:#fff}
+.btn{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:13px;border-radius:12px;border:none;font-weight:700;font-size:16px;cursor:pointer;width:100%;font-family:'Tajawal',sans-serif}
+.btn:hover{opacity:.92}
+.btn:disabled{background:#9ca3af;cursor:not-allowed}
+.hdr{background:linear-gradient(135deg,var(--g),var(--g2));padding:14px 16px 18px;color:#fff}
+.hdr-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.hdr-center{text-align:center;min-width:0}
+.hdr h1{font-size:20px;font-weight:800;color:#fff}
+.hdr-college{font-size:12px;color:rgba(255,255,255,.78);font-weight:600;margin-top:2px}
+.hdr .sub{font-size:12.5px;opacity:.88;margin-top:6px;color:#fff;text-align:center}
+.bell-wrap{position:relative;display:flex;justify-content:flex-start}
+.hdr-logout-col{display:flex;justify-content:flex-end}
+.logout-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;padding:7px 13px;border-radius:10px;cursor:pointer;font-weight:700;font-size:13px;font-family:'Tajawal',sans-serif;white-space:nowrap}
+.logout-btn:hover{background:rgba(255,255,255,.28)}
+.bell-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.5);color:#fff;width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;position:relative}
+.bell-badge{position:absolute;top:-6px;right:-6px;background:#dc2626;color:#fff;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.notif-panel{position:absolute;top:48px;right:0;width:300px;background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.15);z-index:100;overflow:hidden;max-height:480px;overflow-y:auto;direction:rtl;text-align:center}
+.notif-panel h4{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:12px 16px;font-size:14px;position:sticky;top:0}
+.notif-section-title{padding:8px 16px;font-size:12px;font-weight:800;color:#374151;background:#f9fafb;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
+.notif-del-btn{font-size:11px;color:#dc2626;background:none;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700}
+.notif-item{padding:11px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;line-height:1.7;color:#1a1a2e}
+.notif-item.new{background:#f0fdf4}
+.undo-btn{margin-top:12px;width:100%;background:#fef2f2;color:#b91c1c;border:1.5px solid #fca5a5;padding:9px 14px;border-radius:10px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px}
+.undo-btn:hover{background:#fee2e2}
+.srch-wrap{padding:14px 16px;margin-bottom:4px}
+.srch-box{background:#fff;padding:4px 16px;border-radius:16px;display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,.1);max-width:700px;margin:0 auto}
+.srch-inp{width:100%;padding:13px 10px;border:none;outline:none;font-size:14px;font-family:'Tajawal',sans-serif;background:transparent;color:#1a1a2e}
+.srch-inp::placeholder{color:#9ca3af}
+.cont{padding:0 16px 24px;max-width:800px;margin:0 auto}
+.b-btn{margin-bottom:14px;padding:8px 16px;background:#fff;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;font-size:14px;color:#374151}
+.d-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.d-btn{background:var(--card);border:1.5px solid #e5e7eb;border-radius:18px;padding:18px 10px;font-size:13.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:'Tajawal',sans-serif;color:#1a1a2e;box-shadow:var(--shadow)}
+.d-btn:hover{border-color:var(--g);box-shadow:0 4px 20px rgba(0,168,89,.15);transform:translateY(-1px)}
+.d-btn .ico{font-size:26px}
+.c-card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.alrt{padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;margin-bottom:12px}
+.alrt-red{background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c}
+.alrt-amber{background:#fffbeb;border:1px solid #fcd34d;color:#92400e}
+.alrt-blue{background:#eff6ff;border:1px solid #93c5fd;color:#1e40af}
+.loading-msg{text-align:center;padding:40px;color:#007a40;font-weight:700;font-size:15px}
+.c-title{font-size:15.5px;font-weight:800;margin-bottom:6px;color:#1a1a2e}
+.c-meta{font-size:13px;color:#4b5563;line-height:1.9}
+.c-badge{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px}
+.uc{text-transform:uppercase;font-size:12px;color:#6b7280;font-weight:600}
+.l-btn{display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;margin-bottom:10px;background:var(--card);border:1.5px solid #e5e7eb;border-radius:14px;font-size:15px;text-align:right;cursor:pointer;font-family:'Tajawal',sans-serif;color:#1a1a2e;font-weight:600;box-shadow:var(--shadow)}
+.l-btn:hover{border-color:var(--g);transform:translateX(-2px)}
+#tst{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:13px 22px;border-radius:12px;color:#fff;font-weight:700;z-index:999;font-family:'Tajawal',sans-serif;font-size:14px}
+#tst.h{opacity:0;pointer-events:none}
+.f-rw{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.f-cl{flex:1;min-width:140px;display:flex;flex-direction:column;gap:6px}
+.f-cl label{font-size:13px;font-weight:700;color:#374151}
+.reloc-box{background:#fff;padding:20px;border-radius:16px;box-shadow:var(--shadow)}
+.sec-title{font-size:17px;font-weight:800;color:#007a40;margin-bottom:14px}
+.cf-pair{background:#fff;border:1.5px solid #fca5a5;border-radius:16px;padding:14px;margin-bottom:16px;box-shadow:var(--shadow)}
+.cf-head{background:#fef2f2;color:#b91c1c;font-weight:800;font-size:13.5px;padding:8px 12px;border-radius:10px;margin-bottom:12px;text-align:center}
+.cf-mini{border:1px solid #e5e7eb;border-radius:12px;padding:11px 13px;margin-bottom:10px;background:#fafafa}
+.cf-mini .c-title{font-size:14px;margin-bottom:4px}
+.cf-mini .c-meta{font-size:12.5px;line-height:1.8}
+.cf-vs{text-align:center;font-weight:800;color:#b91c1c;font-size:13px;margin:2px 0 10px}
+.cf-fix{width:100%;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;border:none;padding:9px;border-radius:10px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;margin-top:10px}
+.cf-fix:hover{opacity:.92}
+.day-card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);cursor:pointer;border:1.5px solid #e5e7eb}
+.day-card:hover{border-color:var(--g);box-shadow:0 4px 20px rgba(0,168,89,.15)}
+.day-badge{display:inline-block;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;font-size:13px;font-weight:700;padding:4px 12px;border-radius:8px;margin-bottom:8px}
+.print-btn{margin-bottom:16px;padding:10px 20px;background:var(--g);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Tajawal',sans-serif;display:inline-flex;align-items:center;gap:8px}
+#print-header{display:none}
+.filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.filter-btn{padding:7px 14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;color:#374151}
+.filter-btn.active{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;border-color:transparent}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-bx{background:#fff;border-radius:18px;padding:24px;max-width:420px;width:100%;box-shadow:0 12px 50px rgba(0,0,0,.3)}
+.modal-bx h3{font-size:17px;font-weight:800;color:#007a40;margin-bottom:14px;text-align:center}
+.modal-line{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:10px;font-size:13.5px;line-height:1.9;color:#1a1a2e}
+.modal-arrow{text-align:center;color:var(--g2);font-weight:800;font-size:18px;margin:6px 0}
+.modal-btns{display:flex;gap:10px;margin-top:8px}
+.modal-btns button{flex:1;padding:11px;border-radius:10px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px}
+.modal-yes{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff}
+.modal-no{background:#f3f4f6;color:#374151}
+@media print{.hdr,.srch-wrap,.b-btn,.bell-wrap,.logout-btn,#tst,.print-btn{display:none!important}body{background:#fff}.cont{padding:0}.c-card{box-shadow:none;border:1px solid #e5e7eb;break-inside:avoid;margin-bottom:8px}.day-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}#print-header{display:block!important;text-align:center;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #00a859}}
+@media(max-width:480px){.hdr h1{font-size:15px}.hdr-college{font-size:11px}.logout-btn{font-size:12px;padding:6px 9px}.d-btn{padding:14px 6px;font-size:13px}.login-card{padding:32px 24px}.notif-panel{width:260px}}
+</style>
+</head>
+<body>
+<div id="tst" class="h"></div>
+
+<!-- شاشة الدخول -->
+<div id="login-view" class="flex-c">
+  <div class="login-card">
+    <div class="login-logo">🎓</div>
+    <h1>دليل جامعة الحدود الشمالية</h1>
+    <p>أدخل رقمك الجامعي، أو اسمك إذا كنت دكتور</p>
+    <form id="login-form">
+      <label class="field-label">المستخدم / الرقم الجامعي</label>
+      <input id="username" class="inp" placeholder="202300000 أو اسم الدكتور..." required>
+      <label class="field-label">كلمة المرور</label>
+      <input type="password" id="password" class="inp" required>
+      <button type="submit" id="login-btn" class="btn">تسجيل الدخول</button>
+    </form>
+    <div id="login-err" style="display:none;color:#dc2626;text-align:center;margin-top:12px;font-weight:700;font-size:14px"></div>
+  </div>
+</div>
+
+<!-- التطبيق -->
+<div id="app-view" class="hidden">
+  <div class="hdr">
+    <div class="hdr-row">
+      <div class="bell-wrap">
+        <button class="bell-btn" id="bell-btn" onclick="toggleNotif(event)">🔔<span class="bell-badge hidden" id="bell-badge"></span></button>
+        <div class="notif-panel hidden" id="notif-panel"><h4>🔔 التنبيهات</h4><div id="notif-list"></div></div>
+      </div>
+      <div class="hdr-center">
+        <h1>دليل جامعة الحدود الشمالية</h1>
+        <div class="hdr-college">كلية الحاسبات وتقنية المعلومات برفحاء</div>
+      </div>
+      <div class="hdr-logout-col">
+        <button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+      </div>
+    </div>
+    <div id="user-lbl" class="sub"></div>
+  </div>
+  <div class="srch-wrap">
+    <div class="srch-box" id="m-srch">
+      <span style="font-size:18px;color:#9ca3af">🔍</span>
+      <input id="srch-inp" class="srch-inp" placeholder="ابحث عن مادة، دكتور، قاعة، أو CRN...">
+    </div>
+  </div>
+  <div class="cont">
+    <button id="back-btn" class="b-btn hidden">🔙 رجوع</button>
+    <div id="m-cont"></div>
+  </div>
+</div>
+<script>
+// ===== أساسيات =====
+// الأيام بالترتيب (الأحد=0 لين السبت=6)
+const DAYS={"الأحد":0,"الإثنين":1,"الثلاثاء":2,"الأربعاء":3,"الخميس":4,"الجمعة":5,"السبت":6};
+const API="", RLM="&rlm;", $=id=>document.getElementById(id);
+// نجيب الوقت الحالي بتوقيت الرياض
+const now=()=>new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Riyadh"}));
+const sortDays=days=>[...days].sort((a,b)=>(DAYS[a]??99)-(DAYS[b]??99));
+
+// حالة التطبيق كلها في مكان واحد
+const s={
+  aC:{}, ld:true, cP:'login', pH:[], cU:null,   // المواد، حالة التحميل، الصفحة الحالية، سجل التنقل، المستخدم
+  sT:'', sI:null, sCFH:null, rS:[],              // نص البحث، العنصر المختار، المحاضرة المراد نقلها، النقلات
+  studSch:{}, studCount:0, loadingStud:false,    // جداول طلاب المادة
+  courseFilter:'all',                            // فلتر جميع المواد: all/conflict/moved
+  pendingMove:null                               // النقل المعلّق (قبل التأكيد)
+};
+const notifs={newItems:[],oldItems:[]};
+const lV=$('login-view'),aV=$('app-view'),mC=$('m-cont'),bB=$('back-btn'),sIEl=$('srch-inp'),sC=$('m-srch');
+
+// ===== أدوات مساعدة =====
+const hhmm=m=>`${(m/60|0).toString().padStart(2,'0')}:${(m%60).toString().padStart(2,'0')}`; // تحويل الدقائق إلى HH:MM
+const durFmt=m=>{if(m<=0)return"0 د";const d=m/1440|0,h=m%1440/60|0,n=m%60;return d?`${d}ي ${h}س`:h?`${h}س ${n}د`:`${n}د`};
+const toast=(m,err=0)=>{const t=$('tst');t.innerHTML=m;t.style.background=err?'#dc2626':'#059669';t.classList.remove('h');setTimeout(()=>t.classList.add('h'),3000)};
+const emptyMsg=msg=>`<p style="text-align:center;color:#6b7280;padding:40px">${msg}</p>`;
+const timeAgo=ts=>{if(!ts)return'';const d=Math.max(0,(Date.now()-ts)/60000|0);if(d<1)return'الآن';if(d<60)return`قبل ${d} د`;const h=d/60|0;return h<24?`قبل ${h} س`:`قبل ${h/24|0} ي`};
+
+// ألوان البادج حسب اللون
+const BADGES={'var(--red)':'background:#fef2f2;color:#b91c1c;border:1px solid #fca5a5','var(--amber)':'background:#fffbeb;color:#92400e;border:1px solid #fcd34d','var(--g)':'background:#f0fdf4;color:#166534;border:1px solid #86efac','var(--gray)':'background:#f9fafb;color:#374151;border:1px solid #d1d5db'};
+const badgeStyle=bc=>BADGES[bc]||'background:#f3f4f6;color:#374151;border:1px solid #e5e7eb';
+
+// ===== localStorage (الإشعارات المقروءة/المحذوفة لكل مستخدم) =====
+const lsKey=p=>`${p}_${s.cU?.name||'__guest__'}`;
+const lsGet=k=>{if(!s.cU?.name)return[];try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}};
+const lsAdd=(k,ids)=>{if(!s.cU?.name||!ids.length)return;try{localStorage.setItem(k,JSON.stringify([...new Set([...lsGet(k),...ids])].slice(-100)))}catch{}};
+const seenIds=()=>lsGet(lsKey('seenNotifs')), markSeen=ids=>lsAdd(lsKey('seenNotifs'),ids);
+const delIds=()=>lsGet(lsKey('deletedNotifs')), markDeleted=ids=>lsAdd(lsKey('deletedNotifs'),ids);
+
+// ===== المنطق الأساسي =====
+const relocs=uK=>s.rS.filter(x=>x.uK===uK);            // كل نقلات مادة معيّنة
+const relocOn=(uK,day)=>s.rS.find(x=>x.uK===uK&&x.oD===day); // نقلة يوم محدّد
+
+// حالة المحاضرة: جارية الآن؟ كم باقي عليها؟ أو متى تبدأ؟
+const status=(c,oD=null,oS=null,oE=null)=>{
+  if(!c.day?.length||!c.s_time)return{iL:false,t:'غير مجدولة',c:'var(--gray)'};
+  const days=oD?[oD]:c.day, sT=oS??c.s_time, eT=oE??c.e_time;
+  const n=now(), cd=n.getDay(), cm=n.getHours()*60+n.getMinutes();
+  let live=false, left=0, next=Infinity;
+  days.forEach(d=>{
+    const di=DAYS[d]; if(di===undefined)return;
+    if(di===cd){if(cm>=sT&&cm<eT){live=true;left=eT-cm}else next=Math.min(next,cm<sT?sT-cm:10080+sT-cm)}
+    else next=Math.min(next,((di-cd+7)%7)*1440+sT-cm)
+  });
+  return live?{iL:true,t:`🔴 مستمرة — باقي ${durFmt(left)}`,c:'var(--red)'}
+        :next!==Infinity?{iL:false,t:`⏱ بعد ${durFmt(next)}`,c:'var(--amber)'}
+        :{iL:false,t:'مغلقة',c:'var(--gray)'};
+};
+
+// المواعيد الفعلية للمادة بعد ما نطبّق النقل: [{day,s,e,hall}...]
+const effectiveSlots=(k,c)=>c.day.map(od=>{const r=relocOn(k,od);return r?{day:r.nD,s:r.nST,e:r.nET,hall:r.nH}:{day:od,s:c.s_time,e:c.e_time,hall:c.classroom}});
+
+// أيام تعارض مادتين (نفس اليوم والوقت متقاطع). byHall=true يشترط نفس القاعة. نرجّع كل أيام التعارض لا أول يوم فقط
+const clashDays=(k1,c1,k2,c2,byHall)=>{
+  const days=new Set();
+  for(const a of effectiveSlots(k1,c1))for(const b of effectiveSlots(k2,c2))
+    if(a.day===b.day&&a.s<b.e&&a.e>b.s&&(!byHall||(a.hall&&a.hall===b.hall)))days.add(a.day);
+  return [...days];
+};
+
+// هل المادة فيها تعارض قاعة في يوم معيّن؟ (يراعي النقل). لو ما مُرّر يوم يفحص كل الأيام
+// نعتمد القاعة الفعلية لا القادمة من الباك، عشان التعارض يظهر صح في كل الصفحات
+const hasConflict=(k,c,day=null)=>{
+  for(const [k2,c2] of Object.entries(s.aC)){
+    if(k2===k||(c.crn&&c.crn===c2.crn))continue; // ليست نفسها ولا جزء من نفس المادة (نفس CRN)
+    const days=clashDays(k,c,k2,c2,true);
+    if(day?days.includes(day):days.length)return true;
+  }
+  return false;
+};
+
+const matchSearch=c=>[c.c_id,c.c_name,c.t_name,c.classroom,c.crn].some(v=>(v||'').toString().toLowerCase().includes(s.sT));
+
+// هل المادة تخص المستخدم الحالي؟ (الطالب نطابقه بالـ CRN بالضبط لا c_id، لأن كل شعبة لها CRN مستقل)
+const courseMatchesUser=(k,c)=>{
+  if(s.cU?.role==='doctor')return c.t_name===s.cU.name;
+  if(s.cU?.role==='student')return (s.cU.courses||[]).some(sc=>sc.section===c.crn);
+  return false;
+};
+
+// نطلّع أزواج التعارض (مادتين بنفس القاعة والوقت)
+// الأدمن يشوف الكل، والطالب/الدكتور يشوف اللي يخصه فقط (ومادته تظهر أول)
+const conflictPairs=()=>{
+  const role=s.cU?.role, all=Object.entries(s.aC), pairs=[], seen=new Set();
+  for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){
+    let [k1,c1]=all[i],[k2,c2]=all[j];
+    if(c1.crn&&c1.crn===c2.crn)continue; // أجزاء نفس المادة ليست تعارض
+    const days=clashDays(k1,c1,k2,c2,true);
+    if(!days.length)continue;
+    if(role!=='admin'){
+      const m1=courseMatchesUser(k1,c1),m2=courseMatchesUser(k2,c2);
+      if(!m1&&!m2)continue;
+      if(!m1&&m2){[k1,c1,k2,c2]=[k2,c2,k1,c1];} // نخلّي مادة المستخدم أول
+    }
+    for(const day of days){ // زوج مستقل لكل يوم
+      const key=[k1,k2].sort().join('|')+'@'+day;
+      if(seen.has(key))continue; seen.add(key);
+      pairs.push({k1,c1,k2,c2,day});
+    }
+  }
+  return pairs;
+};
+
+// هل القاعة شاغرة في هذا اليوم والوقت؟ (يراعي النقل: المنقول منها يفرّغها، والمنقول لها يشغلها)
+const isHallFree=(hall,day,sT,eT)=>!Object.entries(s.aC).some(([k,c])=>{
+  const a=relocs(k);
+  return c.day.some(cd=>{
+    const mTo=a.find(x=>x.oD===cd&&x.nD===day), mFrom=a.find(x=>x.oD===cd);
+    if(mTo)return mTo.nH===hall&&sT<mTo.nET&&eT>mTo.nST;
+    if(mFrom)return false;
+    return cd===day&&c.classroom===hall&&sT<c.e_time&&eT>c.s_time;
+  });
+});
+
+// هل أحد طلاب المادة عنده محاضرة تتعارض مع الوقت الجديد؟ (يراعي نقلات الطلاب أيضاً)
+const hasStudConflict=(day,sT,eT)=>{
+  for(const sid in s.studSch)for(const sch of (s.studSch[sid]||[])){
+    const rel=s.rS.filter(r=>r.uK===sch.uK), movedFrom=new Set(rel.map(r=>r.oD));
+    for(const r of rel)if(r.nD===day&&sT<r.nET&&eT>r.nST)return true;        // المواعيد الجديدة
+    for(const od of sch.days)if(!movedFrom.has(od)&&od===day&&sT<sch.e_time&&eT>sch.s_time)return true; // المواعيد الأصلية اللي ما انتقلت
+  }
+  return false;
+};
+
+// نحمّل جداول طلاب المادة (عند نقل محاضرة، عشان نتأكد ما نتعارض مع أحد)
+window.loadStudSch=async crn=>{
+  s.loadingStud=true; s.studSch={}; s.studCount=0;
+  if(s.cP==='availableHalls'&&s.sCFH)render();
+  if(!crn){s.loadingStud=false;return}
+  try{
+    const d=await(await fetch(`${API}/api/course_students_schedules/${encodeURIComponent(crn)}?_=${Date.now()}`)).json();
+    s.studSch=d.schedules||{}; s.studCount=d.students_count||0;
+  }catch(e){console.error('فشل تحميل جداول الطلاب:',e)}
+  s.loadingStud=false;
+  if(s.cP==='availableHalls'&&s.sCFH)render();
+};
+
+// ===== الإشعارات =====
+const notifHTML=i=>{
+  const t=i.ts?`<div style="color:#9ca3af;font-size:11px;margin-top:4px">⏱ ${timeAgo(i.ts)}</div>`:'';
+  if(i.type==='hall_freed')return `<b style="color:#1a1a2e">🏫 قاعة ${i.hall} أصبحت شاغرة</b><br><span style="color:#6b7280">📅 يوم ${i.day}<br>🕐 ${hhmm(i.freed_start)} — ${hhmm(i.freed_end)}</span>${t}`;
+  return `<b style="color:#1a1a2e">🔄 ${i.c_name}</b><br><span style="color:#6b7280">👨‍🏫 د. ${i.t_name||'—'}<br><span style="font-size:11.5px">📅 ${i.oD} ${i.oST?`(${hhmm(i.oST)}—${hhmm(i.oET)})`:''} ← ${i.nD} (${hhmm(i.nST)}—${hhmm(i.nET)})</span><br>🏫 ${i.nH}</span>${t}`;
+};
+const sortByTime=arr=>[...arr].sort((a,b)=>(b.ts||0)-(a.ts||0));
+const updateNotif=()=>{
+  const badge=$('bell-badge'),list=$('notif-list'); if(!badge||!list)return;
+  const c=notifs.newItems.length;
+  badge.textContent=c>0?c:''; badge.classList.toggle('hidden',c===0);
+  if(!notifs.newItems.length&&!notifs.oldItems.length){list.innerHTML=`<div style="padding:16px;text-align:center;color:#6b7280;font-size:13px">لا توجد تنبيهات</div>`;return}
+  const sec=(title,items,btn='',cls='')=>`<div class="notif-section-title"><span>${title}</span>${btn}</div>`+items.map(i=>`<div class="notif-item ${cls}">${notifHTML(i)}</div>`).join('');
+  let h='';
+  if(notifs.newItems.length)h+=sec('🆕 جديد',sortByTime(notifs.newItems),'','new');
+  if(notifs.oldItems.length)h+=sec('📋 سابقة',sortByTime(notifs.oldItems),`<button class="notif-del-btn" onclick="deleteOldNotifs()">🗑 حذف</button>`);
+  list.innerHTML=h;
+};
+// ننقل الإشعارات الجديدة للقديمة (فتح الجرس = اعتبرها مقروءة)
+const moveNewToOld=()=>{
+  if(!notifs.newItems.length)return;
+  markSeen(notifs.newItems.filter(n=>n.id).map(n=>n.id));
+  notifs.oldItems=[...notifs.newItems,...notifs.oldItems]; notifs.newItems=[]; updateNotif();
+};
+window.deleteOldNotifs=()=>{markDeleted(notifs.oldItems.filter(n=>n.id).map(n=>n.id));notifs.oldItems=[];updateNotif()};
+window.toggleNotif=e=>{e.stopPropagation();const p=$('notif-panel');const open=!p.classList.contains('hidden');p.classList.toggle('hidden');open?moveNewToOld():updateNotif()};
+document.addEventListener('click',e=>{const p=$('notif-panel');if(p&&!p.classList.contains('hidden')&&!$('bell-btn')?.contains(e.target)){moveNewToOld();p.classList.add('hidden')}});
+
+// هل الإشعار يخص المستخدم؟ (الطالب لازم يكون مسجّل في المادة)
+const inMySchedule=n=>{
+  const courses=s.cU?.courses||[];
+  if(n.crn)return courses.some(c=>c.section===n.crn);
+  return courses.some(c=>c.c_id===n.c_id||(c.c_name&&n.c_name&&c.c_name===n.c_name));
+};
+const isRelevant=n=>!s.cU?false:n.type==='hall_freed'?s.cU.role==='doctor':n.type==='course_moved'?s.cU.role==='student'&&inMySchedule(n):false;
+
+// ===== مساعدات النقل =====
+const clearReloc=()=>{s.sCFH=null;s.studSch={};s.studCount=0;s.loadingStud=false};
+// الأدمن: يفتح شاشة تغيير المحاضرة من أي بطاقة
+window.adminFix=(k,day)=>{
+  s.sCFH={uK:k,selectedDay:day,...s.aC[k]};
+  loadStudSch(s.aC[k].crn);
+  if(s.cP!=='availableHalls'){s.pH.push(s.cP);s.cP='availableHalls'}
+  s.sT=sIEl.value=''; render();
+};
+window.undoReloc=(uK,oD,ev)=>{if(ev)ev.stopPropagation();socket.emit('delete_reloc',{uK,oD});toast('↩ تم التراجع عن التغيير')};
+window.undoAllRelocs=()=>{if(!s.rS.length)return;socket.emit('delete_all_relocs',{});toast('↩ تم التراجع عن كل التعديلات')};
+
+// ===== WebSocket =====
+const socket=io();
+socket.on('relocs_updated',d=>{
+  try{
+    s.rS=d||[];
+    if(s.cU&&!s.ld&&s.cP!=='login'){
+      // لو المستخدم في وسط تغيير محاضرة: نعيد تحميل جداول الطلاب بدل ما نطرده (عشان التوفّر يتحدّث)
+      if(s.cP==='availableHalls'&&s.sCFH)loadStudSch(s.sCFH.crn);
+      else{clearReloc();setTimeout(()=>{try{render()}catch(e){console.error(e)}},150)}
+    }
+  }catch(e){console.error(e)}
+});
+socket.on('hall_freed',d=>{
+  if(s.cU?.role!=='doctor')return;
+  if(seenIds().includes(d.id)||delIds().includes(d.id))return;
+  setTimeout(()=>{if(!isHallFree(d.hall,d.day,d.freed_start,d.freed_end))return;notifs.newItems.unshift({...d,type:'hall_freed'});updateNotif()},300);
+});
+socket.on('course_moved',d=>{
+  if(s.cU?.role!=='student')return;
+  if(seenIds().includes(d.id)||delIds().includes(d.id))return;
+  if(!inMySchedule(d))return; // طلاب المادة فقط
+  notifs.newItems.unshift({...d,type:'course_moved'}); updateNotif();
+});
+// لو تراجعنا عن نقلة، نشيل إشعارها
+socket.on('reloc_deleted',d=>{
+  if(d.all){ // تراجع شامل: نشيل كل إشعارات نقل المواد
+    const f=arr=>arr.filter(n=>n.type!=='course_moved');
+    notifs.newItems=f(notifs.newItems); notifs.oldItems=f(notifs.oldItems); updateNotif(); return;
+  }
+  const pre=`move_${d.uK}_${d.oD}_`, f=arr=>arr.filter(n=>!(n.id||'').startsWith(pre));
+  notifs.newItems=f(notifs.newItems); notifs.oldItems=f(notifs.oldItems); updateNotif();
+});
+
+// ===== تحميل البيانات عند الدخول =====
+const load=async()=>{
+  try{s.aC=await(await fetch(`${API}/api/courses?nocache=${Date.now()}`)).json()}
+  catch{toast("⚠️ تعذر الاتصال",1);s.ld=false;return render()}
+  try{s.rS=await(await fetch(`${API}/api/relocations`)).json()}catch{s.rS=[]}
+  try{
+    const nData=await(await fetch(`${API}/api/notifications`)).json();
+    const seen=seenIds(),deleted=delIds();
+    const valid=nData.filter(isRelevant).filter(d=>!deleted.includes(d.id)).filter(d=>d.type!=='hall_freed'||isHallFree(d.hall,d.day,d.freed_start,d.freed_end));
+    notifs.newItems=valid.filter(n=>!seen.includes(n.id));
+    notifs.oldItems=valid.filter(n=>seen.includes(n.id));
+    updateNotif();
+  }catch{}
+  s.ld=false; render();
+};
+
+// ===== التنقل =====
+const go=p=>{if(p!==s.cP){s.pH.push(s.cP);s.cP=p;s.sT=sIEl.value='';s.courseFilter='all';s.pendingMove=null;render()}};
+function doLogout(){
+  Object.assign(s,{cU:null,cP:'login',pH:[],sT:'',sI:null,sCFH:null,rS:[],aC:{},ld:true,studSch:{},studCount:0,loadingStud:false,courseFilter:'all',pendingMove:null});
+  notifs.newItems=[];notifs.oldItems=[];
+  aV.classList.add('hidden');lV.classList.remove('hidden');
+  $('username').value=$('password').value=''; $('login-err').style.display='none';
+}
+bB.onclick=()=>{
+  if(s.pendingMove){s.pendingMove=null;return render()} // أول شي نقفل نافذة التأكيد
+  if(s.sCFH)clearReloc();
+  else if(s.sI)s.sI=null;
+  else if(s.pH.length)s.cP=s.pH.pop();
+  else s.cP='dashboard';
+  s.sT=sIEl.value='';s.courseFilter='all';render();
+};
+sIEl.oninput=e=>{s.sT=e.target.value.toLowerCase();s.cP==='dashboard'&&s.sT.trim()?go('allCourses'):render()};
+
+// ===== الدخول =====
+$('login-form').onsubmit=async e=>{
+  e.preventDefault();
+  const raw=($('username').value||'').trim(),pass=($('password').value||'').trim(),btn=$('login-btn'),err=$('login-err');
+  err.style.display='none';
+  const showErr=msg=>{err.textContent=msg;err.style.display='block';btn.disabled=false;btn.textContent='تسجيل الدخول'};
+  if(!raw)return showErr('❌ أدخل رقمك الجامعي أو اسمك');
+  btn.disabled=true;btn.textContent='⏳ جاري التحقق...';
+  try{
+    if(raw.toLowerCase()==='admin'){ // المشرف: admin / admin
+      if(pass.toLowerCase()!=='admin')return showErr('❌ كلمة مرور المشرف غير صحيحة');
+      s.cU={role:'admin',name:'المشرف',studentId:null,courses:[]};
+    }else if(/^\d{7,12}$/.test(raw)){ // رقم جامعي = طالب
+      const d=await(await fetch(`${API}/api/student_courses/${raw}`)).json();
+      if(!d.courses?.length)return showErr('❌ الرقم الجامعي غير موجود');
+      s.cU={role:'student',name:d.student_name||raw,studentId:raw,courses:d.courses};
+    }else{ // غير ذلك = دكتور بالاسم
+      const d=await(await fetch(`${API}/api/doctor_login/${encodeURIComponent(raw)}`)).json();
+      if(!d.found)return showErr('❌ لم يتم العثور على مستخدم بهذا الأسم');
+      s.cU={role:'doctor',name:d.full_name,studentId:null,courses:[]};
+    }
+  }catch{return showErr('❌ تعذر الاتصال')}
+  btn.disabled=false;btn.textContent='تسجيل الدخول';
+  s.cP='dashboard';lV.classList.add('hidden');aV.classList.remove('hidden');
+  $('user-lbl').innerHTML=s.cU.role==='admin'
+    ?`<b>أهلاً بك ${s.cU.name} 👋</b><br><span style="font-size:12px">🛡️ حساب مشرف — صلاحيات كاملة</span>`
+    :s.cU.role==='doctor'
+    ?`<b>أهلاً بك د. ${s.cU.name} 👋</b><br><span style="font-size:12px">👨‍🏫 حساب أكاديمي</span>`
+    :`<b>أهلاً بك، ${s.cU.name} 👋</b><br><span style="font-size:12px">${s.cU.studentId} | ${s.cU.courses.length} مادة مسجّلة</span>`;
+  load();
+};
+
+// ===== النقل: القاعات والأوقات المتاحة =====
+// القاعات الشاغرة لليوم/الوقت الجديد (الفاضية + اللي تفرّغت بسبب النقلات)
+window.gH=(nD,nST,cM)=>{
+  const nET=nST+(cM.e_time-cM.s_time);
+  const halls=[...new Set(Object.values(s.aC).map(c=>c.classroom).filter(Boolean))];
+  s.rS.forEach(r=>{if(r.nD===nD&&r.nH&&!halls.includes(r.nH))halls.push(r.nH)});
+  const sel=cM.selectedDay||cM.day[0],ex=relocOn(cM.uK,sel),cHall=ex?ex.nH:cM.classroom;
+  return halls.filter(H=>{
+    if(H===cHall)return false;
+    const freed=s.rS.some(r=>{if(r.uK===cM.uK)return false;const o=s.aC[r.uK];return o?.classroom===H&&r.oD===nD&&nST<o.e_time&&nET>o.s_time});
+    return freed||isHallFree(H,nD,nST,nET);
+  });
+};
+// الأوقات اللي فيها قاعة شاغرة وما تتعارض مع أي طالب
+window.gT=()=>{
+  const nD=$('u-day').value,uT=$('u-time'),cM=s.sCFH;
+  if(!nD){uT.innerHTML='<option value="">اختر اليوم أولاً</option>';return chkH()}
+  let o=''; const dur=cM.e_time-cM.s_time;
+  for(let t=480;t<=1200-dur;t+=30){
+    if(hasStudConflict(nD,t,t+dur))continue;
+    if(gH(nD,t,cM).length)o+=`<option value="${t}">${hhmm(t)}</option>`;
+  }
+  uT.innerHTML=o||'<option value="">لا توجد أوقات تناسب جميع الطلاب</option>'; chkH();
+};
+window.chkH=()=>{
+  const nD=$('u-day').value,nT=$('u-time').value,uH=$('u-hall'),b=$('sbmt-btn');
+  if(!nD||!nT){uH.innerHTML='<option value="">أكمل الاختيار...</option>';return uH.disabled=b.disabled=true}
+  const fh=gH(nD,+nT,s.sCFH);
+  uH.innerHTML=fh.length?'<option value="">اختر القاعة...</option>'+fh.map(H=>`<option value="${H}">${H}</option>`).join(''):'<option value="">لا قاعات شاغرة</option>';
+  uH.disabled=b.disabled=!fh.length;
+};
+// نجهّز النقل ونعرض نافذة التأكيد قبل التنفيذ
+window.hBE=()=>{
+  const nD=$('u-day').value,nST=+$('u-time').value,nH=$('u-hall').value,cM=s.sCFH;
+  if(!nD||!nST||!nH)return toast('❌ أكمل الحقول',1);
+  if(DAYS[nD]>4)return toast('❌ ممنوع نهاية الأسبوع',1);
+  if(hasStudConflict(nD,nST,nST+(cM.e_time-cM.s_time)))return toast('❌ هذا الوقت يتعارض مع جدول أحد الطلاب',1); // فحص أخير قبل التأكيد
+  const sel=cM.selectedDay||cM.day[0],ex=relocOn(cM.uK,sel),nET=nST+(cM.e_time-cM.s_time);
+  s.pendingMove={uK:cM.uK,oD:sel,nD,nH,nST,nET,oldHall:ex?ex.nH:cM.classroom,oST:ex?.nST??cM.s_time,oET:ex?.nET??cM.e_time,c_name:cM.c_name,t_name:cM.t_name,c_id:cM.c_id||'',crn:cM.crn||''};
+  render();
+};
+// تنفيذ النقل بعد التأكيد
+window.confirmMove=()=>{
+  const m=s.pendingMove;if(!m)return;
+  socket.emit('add_reloc',m);
+  toast('✅ تم التغيير');
+  s.pendingMove=null;clearReloc();
+  if(s.pH.length)s.cP=s.pH.pop(); // نرجع للصفحة السابقة
+  render();
+};
+window.cancelMove=()=>{s.pendingMove=null;render()};
+
+// ===== البطاقات =====
+const alertConflict=d=>`<div class="alrt alrt-red">⚠️ تعارض في يوم ${d}</div>`;
+const alertReloc=r=>`<div class="alrt alrt-amber">🔄 نُقلت — ${r.nD} الساعة ${hhmm(r.nST)} | قاعة ${r.nH}</div>`;
+const alertRelocFrom=(d,r)=>`<div class="alrt alrt-amber">🔄 نُقلت من ${d} إلى ${r.nD} الساعة ${hhmm(r.nST)} | قاعة ${r.nH}</div>`;
+const fullMeta=c=>`<br>👥${RLM} ${c.registered||'—'} / ${c.capacity||'—'} طالب | 📌${RLM} شعبة ${c.section||'—'} | 🔢${RLM} CRN: ${c.crn||'—'}`;
+
+// نحدّد لون البطاقة وحالتها — نحسب التعارض على اليوم الفعلي (بعد النقل)، والأحمر أولى من الكهرماني
+const stylize=(k,c,day=null)=>{
+  const r=day?relocOn(k,day):relocs(k)[0],moved=!!r;
+  const effDay=moved?r.nD:day;
+  const conflict=hasConflict(k,c,effDay);
+  const st=moved?status(c,r.nD,r.nST,r.nET):(day?status(c,day,c.s_time,c.e_time):status(c));
+  return {r,moved,conflict,st,bc:conflict?'var(--red)':moved?'var(--amber)':st.c};
+};
+const isLive=(k,c,day)=>{const r=relocOn(k,day);return(r?status(c,r.nD,r.nST,r.nET):status(c,day,c.s_time,c.e_time)).iL};
+// نفكّك القائمة لعناصر (مادة-يوم) ونرتّبها حسب اليوم
+const sortByDay=(arr,useEff=false)=>arr.flatMap(([k,c])=>c.day.map(day=>{const r=useEff?relocOn(k,day):null;return{k,c,day,di:DAYS[r?r.nD:day]??99}})).sort((a,b)=>a.di-b.di);
+const listBtns=(list,pick,ico)=>[...new Set(list.map(([_,c])=>pick(c)).filter(Boolean))].map(v=>`<button onclick="s.sI='${v}';render()" class="l-btn">${ico} ${v}</button>`).join('');
+
+// زر "غيّر الموعد" — يظهر للأدمن فقط على أي بطاقة
+const adminFixBtn=(k,c,day)=>s.cU?.role==='admin'?`<button class="cf-fix" onclick="event.stopPropagation();adminFix('${k}','${day}')">🔧 تغيير موعد هذه المادة</button>`:'';
+
+// بطاقة عرض عادية (يوم واحد). forceConflict نستخدمه في فلتر المتعارضة عشان الوسم يتّسق
+const scheduleCard=(k,c,day,forceConflict=false)=>{const {r,moved,conflict,st,bc}=stylize(k,c,day);const showCf=conflict||forceConflict;return `<div class="c-card" style="border-right:4px solid ${bc}">${showCf?alertConflict(moved?r.nD:day):''}${moved?alertRelocFrom(day,r):''}<span class="day-badge" style="margin-bottom:8px">🗓 ${moved?r.nD:day}</span><div class="c-title" style="margin-top:6px">${c.c_name} <span class="uc">(${c.c_id})</span></div><div class="c-meta">👨‍🏫 ${c.t_name}<br>📍${RLM} ${moved?r.nH:c.classroom||'—'} | 🕒${RLM} ${moved?`${hhmm(r.nST)} - ${hhmm(r.nET)}`:c.time}${fullMeta(c)}</div><span class="c-badge" style="${badgeStyle(bc)}">${st.t}</span>${adminFixBtn(k,c,day)}</div>`};
+
+// بطاقة اختيار محاضرة للنقل (تعرض الأصل، ولو منقولة فيها زر تراجع)
+const dayCard=(k,c,day)=>{const {r,moved,conflict,st,bc}=stylize(k,c,day);const undo=moved?`<button class="undo-btn" onclick="undoReloc('${k}','${day}',event)">↩ تراجع عن التغيير وإرجاع المحاضرة لوضعها الأصلي</button>`:'';return `<div class="day-card" style="border-right:4px solid ${bc}" onclick="s.sCFH={uK:'${k}',selectedDay:'${day}',...s.aC['${k}']};loadStudSch(s.aC['${k}'].crn);s.sT=sIEl.value='';render()">${conflict?alertConflict(day):''}${moved?alertReloc(r):''}<span class="day-badge">🗓 ${day}</span><div class="c-title" style="margin-top:6px">${c.c_name} <span class="uc">(${c.c_id})</span></div><div class="c-meta">👨‍🏫 ${c.t_name}<br>📍${RLM} ${c.classroom||'—'} | 🕒${RLM} ${c.time}${fullMeta(c)}</div><span class="c-badge" style="${badgeStyle(bc)}">${st.t}</span>${undo}</div>`};
+
+// بطاقة مادة ما لها جدول بعد (للطلاب)
+const simpleCard=sc=>`<div class="c-card" style="border-right:4px solid #6b7280"><div class="c-title">${sc.c_name} <span class="uc">(${sc.c_id})</span></div><div class="c-meta">👨‍🏫 ${sc.t_name} | 📌${RLM} شعبة ${sc.section}</div><span class="c-badge" style="${badgeStyle('var(--gray)')}">غير مجدولة بعد</span></div>`;
+
+// مادة مصغّرة داخل بطاقة التعارض
+const cfMini=(k,c,day)=>{const slots=effectiveSlots(k,c),sl=slots.find(x=>x.day===day)||slots[0];return `<div class="cf-mini"><div class="c-title">${c.c_name} <span class="uc">(${c.c_id})</span></div><div class="c-meta">👨‍🏫 ${c.t_name}<br>📍${RLM} ${sl.hall||'—'} | 🕒${RLM} ${hhmm(sl.s)} - ${hhmm(sl.e)} | 🔢${RLM} CRN: ${c.crn||'—'}</div>${adminFixBtn(k,c,day)}</div>`};
+// بطاقة زوج التعارض (المادتين مع بعض)
+const conflictPairCard=({k1,c1,k2,c2,day})=>`<div class="cf-pair"><div class="cf-head">⚠️ تعارض في يوم ${day}</div>${cfMini(k1,c1,day)}<div class="cf-vs">⚡ يتعارض مع ⚡</div>${cfMini(k2,c2,day)}</div>`;
+
+// ===== أدوات الرندر =====
+const printHeader=(title,subtitle='')=>`<div id="print-header"><h2 style="color:#007a40;margin-bottom:4px">${title}</h2><p style="color:#6b7280;font-size:13px">جامعة الحدود الشمالية — كلية الحاسبات وتقنية المعلومات</p>${subtitle?`<p style="color:#6b7280;font-size:12px;margin-top:2px">${subtitle}</p>`:''}<p style="color:#6b7280;font-size:12px;margin-top:4px">تاريخ الطباعة: ${now().toLocaleDateString('ar-SA')}</p></div><button class="print-btn" onclick="window.print()">🖨️ طباعة جدولي</button>`;
+const renderDays=courseList=>sortByDay(courseList,true).map(({k,c,day})=>scheduleCard(k,c,day)).join('');
+
+// نجيب كل أجزاء المادة المسجّلة (ممكن تكون موزّعة على كم صف بنفس الـ CRN)
+const matchCourseAll=(sc,list)=>{
+  const n=str=>str.trim().replace(/\s+/g,' ');
+  let found=list.filter(([k,x])=>x.crn===sc.section); if(found.length)return found; // نطابق بالـ CRN أول
+  found=list.filter(([k,x])=>x.c_id===sc.c_id&&n(x.t_name)===n(sc.t_name)); if(found.length)return found; // مطابقة احتياطية
+  return list.filter(([k,x])=>x.c_id===sc.c_id);
+};
+
+// ===== الرندر الرئيسي =====
+const render=()=>{
+  if(s.cP==='login')return;
+  bB.classList.toggle('hidden',s.cP==='dashboard');
+  if(s.ld){mC.innerHTML='<p style="text-align:center;padding:40px;color:#007a40;font-weight:700;font-size:16px">⏳ مزامنة البيانات...</p>';return}
+  updateNotif();
+  sC.parentElement.classList.remove('hidden');
+  if(s.cP==='availableHalls'){sIEl.placeholder=s.sCFH?'':'ابحث بالمادة، الدكتور، أو CRN...';if(s.sCFH)sC.parentElement.classList.add('hidden');}
+  else sIEl.placeholder=s.cP==='teachers'?'ابحث عن دكتور...':s.cP==='halls'?'ابحث عن قاعة...':'ابحث عن مادة، دكتور، قاعة، أو CRN...';
+
+  let list=Object.entries(s.aC);
+  const cfPairs=conflictPairs(), conflicts=cfPairs.length;
+  if(s.sT)list=list.filter(([_,c])=>matchSearch(c));
+  let h='';
+  const isDoc=s.cU?.role==='doctor', isAdmin=s.cU?.role==='admin';
+
+  // ── الرئيسية ──
+  if(s.cP==='dashboard'){
+    const btn=(p,i,l,x='')=>`<button onclick="go('${p}')" class="d-btn" ${x}><span class="ico">${i}</span>${l}</button>`;
+    h=`<div class="d-grid">`;
+    if(conflicts>0)h+=btn('conflicts','🚨',`(${conflicts}) تعارضات`,`style="background:#fef2f2;border-color:#fca5a5;color:#b91c1c;grid-column:1/-1"`);
+    if(isAdmin&&s.rS.length>0)h+=btn('changes','🗂️',`(${s.rS.length}) التعديلات`,`style="background:#fffbeb;border-color:#fcd34d;color:#92400e;grid-column:1/-1"`);
+    if(!isAdmin)h+=btn('mySchedule',isDoc?'👨‍🏫':'🎓','جدولي');
+    h+=btn('allCourses','📚','جميع المواد')+btn('teachers','👨‍🏫','الدكاترة')+btn('halls','🏫','القاعات');
+    h+=(isDoc||isAdmin)?btn('currentLectures','🔴','المحاضرات الحالية')+btn('availableHalls','✅','تغيير وقت/مكان المحاضرة',isAdmin?`style="grid-column:1/-1"`:''):btn('currentLectures','🔴','المحاضرات الحالية',`style="grid-column:1/-1"`);
+    h+=`</div>`;
+
+  // ── جدولي ──
+  }else if(s.cP==='mySchedule'){
+    if(isDoc){
+      const mine=list.filter(([_,c])=>c.t_name===s.cU.name);
+      h=mine.length?printHeader(`جدول د. ${s.cU.name}`)+renderDays(mine):emptyMsg('لا توجد مواد مرتبطة بهذا الحساب');
+    }else{
+      const sl=s.cU?.courses||[];
+      if(!sl.length)h=emptyMsg('⚠️ لا توجد مواد مرتبطة بهذا الرقم');
+      else{
+        const shown=new Set(),matched=[],unmatched=[];
+        sl.forEach(sc=>{const parts=matchCourseAll(sc,list).filter(([k])=>!shown.has(k));if(parts.length){parts.forEach(([k,c])=>{shown.add(k);matched.push([k,c])})}else unmatched.push(sc)});
+        h=printHeader(`جدول ${s.cU.name}`,`الرقم الجامعي: ${s.cU.studentId}`)+`<p style="color:#6b7280;font-size:13px;margin-bottom:14px">📋 ${sl.length} مادة مسجّلة</p>`+renderDays(matched)+unmatched.map(simpleCard).join('');
+      }
+    }
+
+  // ── سجلّ التعديلات (admin) ──
+  }else if(s.cP==='changes'){
+    if(!s.rS.length)h=emptyMsg('لا توجد تعديلات حالياً');
+    else{
+      const sorted=[...s.rS].sort((a,b)=>(DAYS[a.nD]??99)-(DAYS[b.nD]??99));
+      h=`<div class="sec-title">🗂️ التعديلات المطبّقة (${s.rS.length})</div><button class="filter-btn" style="margin-bottom:14px;background:#fef2f2;border-color:#fca5a5;color:#b91c1c" onclick="undoAllRelocs()">↩ التراجع عن كل التعديلات</button>`;
+      sorted.forEach(r=>{const c=s.aC[r.uK]||{};h+=`<div class="c-card" style="border-right:4px solid var(--amber)"><div class="c-title">${r.c_name||c.c_name||'—'} <span class="uc">(CRN: ${r.crn||c.crn||'—'})</span></div><div class="c-meta">👨‍🏫 ${r.t_name||c.t_name||'—'}<br>📍${RLM} من: ${r.oD} ${hhmm(r.oST)}–${hhmm(r.oET)} | قاعة ${r.oldHall||'—'}<br>📍${RLM} إلى: <b>${r.nD} ${hhmm(r.nST)}–${hhmm(r.nET)} | قاعة ${r.nH}</b></div><button class="undo-btn" onclick="undoReloc('${r.uK}','${r.oD}',event)">↩ تراجع عن هذا التعديل</button></div>`});
+    }
+
+  // ── التعارضات ──
+  }else if(s.cP==='conflicts'){
+    let pairs=cfPairs;
+    if(s.sT)pairs=pairs.filter(p=>matchSearch(p.c1)||matchSearch(p.c2));
+    const title=isAdmin?'🚨 جميع التعارضات في القاعات':isDoc?'🚨 تعارضات قاعات موادك التدريسية':'🚨 تعارضات قاعات موادك';
+    h=`<div class="sec-title">${title}</div>`+(pairs.length?pairs.map(conflictPairCard).join(''):emptyMsg('✅ لا توجد تعارضات'));
+
+  // ── جميع المواد / المحاضرات الحالية ──
+  }else if(['allCourses','currentLectures'].includes(s.cP)){
+    let fl=s.cP==='currentLectures'?list.filter(([k,c])=>c.day.some(d=>isLive(k,c,d))):list;
+    // فلتر الأدمن: الكل/المتعارضة/المنقولة. نبني خريطة أيام التعارض عشان نفلتر على مستوى اليوم
+    let cfDayMap=null;
+    if(s.cP==='allCourses'&&isAdmin){
+      if(s.courseFilter==='conflict'){
+        cfDayMap={};
+        cfPairs.forEach(p=>{(cfDayMap[p.k1]=cfDayMap[p.k1]||new Set()).add(p.day);(cfDayMap[p.k2]=cfDayMap[p.k2]||new Set()).add(p.day)});
+        fl=fl.filter(([k])=>cfDayMap[k]);
+      }else if(s.courseFilter==='moved')fl=fl.filter(([k])=>relocs(k).length>0);
+      const fb=(v,l)=>`<button class="filter-btn ${s.courseFilter===v?'active':''}" onclick="s.courseFilter='${v}';render()">${l}</button>`;
+      h+=`<div class="filter-row">${fb('all','الكل')}${fb('conflict','المتعارضة')}${fb('moved','المنقولة')}</div>`;
+    }
+    const seen=new Set(); let cards='';
+    const inConflict=s.courseFilter==='conflict'&&cfDayMap;
+    fl.forEach(([k,c])=>{
+      if(seen.has(k))return; seen.add(k);
+      sortDays(c.day).forEach(day=>{
+        const eff=relocOn(k,day),effDay=eff?eff.nD:day; // اليوم الفعلي بعد النقل
+        // نفلتر على مستوى اليوم: المنقولة = الأيام المنقولة فقط، المتعارضة = أيام التعارض فقط
+        if(s.courseFilter==='moved'&&s.cP==='allCourses'&&isAdmin&&!eff)return;
+        if(inConflict&&!cfDayMap[k]?.has(effDay))return;
+        if(s.cP==='currentLectures'&&!isLive(k,c,day))return;
+        cards+=scheduleCard(k,c,day,inConflict); // في فلتر المتعارضة نفرض الوسم عشان يتّسق
+      });
+    });
+    h+=cards||emptyMsg('لا توجد نتائج');
+
+  // ── الدكاترة ──
+  }else if(s.cP==='teachers'){
+    if(s.sI){h=sortByDay(list.filter(([_,c])=>c.t_name===s.sI)).map(({k,c,day})=>scheduleCard(k,c,day)).join('');if(!h)h=emptyMsg('لا توجد محاضرات مرتبطة');}
+    else h=listBtns(list,c=>c.t_name,'👨‍🏫 د.');
+
+  // ── القاعات ──
+  }else if(s.cP==='halls'){
+    if(s.sI){h=sortByDay(list).map(({k,c,day})=>{const r=relocOn(k,day);return(r?r.nH:c.classroom)===s.sI?scheduleCard(k,c,day):''}).join('');if(!h.trim())h=emptyMsg('لا توجد محاضرات في هذه القاعة');}
+    else h=listBtns(list,c=>c.classroom,'🏫');
+
+  // ── تغيير وقت/مكان المحاضرة ──
+  }else if(s.cP==='availableHalls'){
+    if(!s.sCFH){
+      const docList=isDoc?list.filter(([_,c])=>c.t_name===s.cU.name):list;
+      const cards=sortByDay(docList).map(({k,c,day})=>dayCard(k,c,day)).join('');
+      const hint=isAdmin?'✅ المشرف: اختر أي محاضرة لتغيير موعدها':'✅ اختر اليوم الذي تريد تغيير موعده';
+      h=`<div class="sec-title">${hint}</div>`+(cards||emptyMsg('لا توجد مواد'));
+    }else{
+      const cM=s.sCFH,sel=cM.selectedDay||cM.day[0];
+      if(s.loadingStud)h=`<div class="sec-title">🔄 تغيير موعد يوم ${sel}</div><p class="loading-msg">⏳ جاري تحميل جداول الطلاب المسجّلين...</p>`;
+      else{
+        const dayOpts=Object.keys(DAYS).filter(d=>DAYS[d]<5).map(d=>`<option value="${d}">${d}</option>`).join('');
+        const studInfo=s.studCount>0?`<div class="alrt alrt-blue">🔍 يتم مراعاة جداول <b>${s.studCount}</b> طالب مسجّل — تُعرض فقط الأوقات والقاعات التي لا تتعارض مع جدول أي طالب</div>`:`<div class="alrt alrt-amber">⚠️ لا يوجد طلاب مسجّلون في هذه المادة — سيتم عرض كل الأوقات الممكنة</div>`;
+        const selStyle='style="margin:0;color:#1a1a2e"';
+        h=`<div class="sec-title">🔄 تغيير موعد يوم ${sel}</div>${studInfo}<div class="reloc-box"><div class="f-rw"><div class="f-cl"><label>1. اليوم الجديد</label><select id="u-day" class="inp" ${selStyle} onchange="gT()"><option value="">اختر...</option>${dayOpts}</select></div><div class="f-cl"><label>2. الوقت المناسب (${cM.e_time-cM.s_time} د)</label><select id="u-time" class="inp" ${selStyle} onchange="chkH()"><option value="">اختر اليوم أولاً</option></select></div></div><div class="f-rw"><div class="f-cl"><label>3. القاعة الشاغرة</label><select id="u-hall" class="inp" ${selStyle} disabled><option value="">أكمل الاختيار...</option></select></div></div><button id="sbmt-btn" onclick="hBE()" class="btn" style="margin-top:6px" disabled>تأكيد نقل المحاضرة</button></div>`;
+      }
+    }
+  }
+
+  // نافذة تأكيد النقل (لو فيه نقل معلّق) — تعرض من/إلى قبل التنفيذ
+  if(s.pendingMove){
+    const m=s.pendingMove;
+    h+=`<div class="modal-ov" onclick="if(event.target===this)cancelMove()"><div class="modal-bx"><h3>📋 تأكيد نقل المحاضرة</h3><div class="modal-line"><b>${m.c_name}</b> <span class="uc">(CRN: ${m.crn||'—'})</span><br>👨‍🏫 ${m.t_name||'—'}</div><div class="modal-line">📍 من: ${m.oD} ${hhmm(m.oST)}–${hhmm(m.oET)} | قاعة ${m.oldHall||'—'}</div><div class="modal-arrow">⬇️</div><div class="modal-line" style="border-color:#86efac;background:#f0fdf4">📍 إلى: ${m.nD} ${hhmm(m.nST)}–${hhmm(m.nET)} | قاعة ${m.nH}</div><div class="modal-btns"><button class="modal-yes" onclick="confirmMove()">✅ تأكيد النقل</button><button class="modal-no" onclick="cancelMove()">إلغاء</button></div></div></div>`;
+  }
+  mC.innerHTML=h;
+};
+
+// نحدّث الوقت والحالة كل نصف دقيقة، والإشعارات كل دقيقة
+setInterval(()=>{if(['currentLectures','dashboard','mySchedule','halls'].includes(s.cP))render()},30000);
+setInterval(()=>{const p=$('notif-panel');if(p&&!p.classList.contains('hidden'))updateNotif()},60000);
+
+</script>
+</body>
+</html>
