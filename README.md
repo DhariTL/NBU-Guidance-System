@@ -47,7 +47,7 @@ The original dataset used during development was exported from NBU's Argos stude
 
 ## Team
 
-- **Dhari Talal Alshammari** — dhari.altalal@gmail.com
+- **Dhari Talal Alshammari** — dhari.altalal@gmail.com · [LinkedIn](https://www.linkedin.com/in/dhari-alshammari-4b9797299/)
 - **Fahad Habib Alshammari**
 - **Jarrah Faisal Alshammari**
 
